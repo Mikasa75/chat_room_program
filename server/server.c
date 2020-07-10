@@ -46,12 +46,6 @@ int main(int argc, char** argv) {
 
     }
 
-
-
-    //判断一配置文件合法性
-
-
-
     if (!port) port = atoi(get_conf_value(conf, "PORT"));
 
     court.width = atoi(get_conf_value(conf, "COLS"));

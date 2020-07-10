@@ -53,7 +53,7 @@ void do_work(struct User* user) {
         printf("<%s> ∼ %s \n", user->name, msg.msg);
         sprintf(r_msg.msg,"User"RED" %s"NONE"上线了!",user->name);
         r_msg.type = CHAT_SYS;
-        send_all(&msg);
+        send_all(&r_msg);
         //?????????????????//
     }
 

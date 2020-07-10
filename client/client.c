@@ -93,9 +93,9 @@ int main(int argc, char** argv) {
 
 
 
-    DBG("<"GREEN"Conf Show"NONE"> : server_ip = %s, port = %d, team = %s, name = %s\n%s", \
+//    DBG("<"GREEN"Conf Show"NONE"> : server_ip = %s, port = %d, team = %s, name = %s\n%s", \
 
-        server_ip, server_port, request.team ? "BLUE" : "RED", request.name, request.msg);
+  //      server_ip, server_port, request.team ? "BLUE" : "RED", request.name, request.msg);
 
 
 
@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 
 
 
-    sendto(sockfd, &request.msg, sizeof(request), 0, (struct sockaddr*)&server, len);
+    sendto(sockfd, &request, sizeof(request), 0, (struct sockaddr*)&server, len);
 
     fd_set set;
     FD_ZERO(&set);
