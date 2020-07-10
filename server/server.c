@@ -22,7 +22,9 @@ pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 
 void logout(int sigunm){
     struct ChatMsg msg;
+    bzero(&msg,sizeof(msg));
     msg.type = CHAT_SYS;
+    sprintf(msg.msg,"The server is out of service. You have lost connection with the server.");
     send_all(&msg);
     exit(0);
 

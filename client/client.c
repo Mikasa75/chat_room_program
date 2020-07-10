@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
     pthread_create(&recv_t, NULL, do_recv, NULL);
    
     signal(SIGINT, logout);
-    struct ChatMsg msg;
+/*    struct ChatMsg msg;
     bzero(&msg, sizeof(msg));
     msg.type = CHAT_WALL;
     printf(RED"Please Input: \n"NONE);
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
             if (msg.msg[0] == '@') msg.type = CHAT_MSG;
             if (msg.msg[0] == '#') msg.type = CHAT_FUNC;
             send(sockfd, (void*)&msg, sizeof(msg), 0);
-        }
+        }   */
     while (1) {
         bzero(&msg, sizeof(msg));
         msg.type = CHAT_WALL;
