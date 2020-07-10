@@ -36,7 +36,27 @@ void send_all(struct ChatMsg *msg){
         }
 }
 
+void statnames(struct User* user) {
+      struct ChatMsg msg;
+      bzero(&msg,sizeof(msg));
+      for(int i =0;i<MAX;i++){
+        if(bteam[i].online) {
+          strcat(msg.msg,bteam[i].name);
+          int i =strlen(msg.msg);
+          msg.msg[i]=' ';
+          msg.msg[i+1]='\0';
+        }
+        if(rteam[i].online) {
+          strcat(msg.msg,rteam[i].name);
+          int i =strlen(msg.msg);
+          msg.msg[i]=' ';
+          msg.msg[i+1]='\0';
+        }
 
+      }
+        send(user->fd,(void*)&msg,sizeof(msg),0);
+
+}
 void do_work(struct User* user) {
 
     struct ChatMsg msg;
@@ -78,7 +98,7 @@ void do_work(struct User* user) {
 
 	bzero(msg.msg,sizeof(msg.msg));
 	msg.type = CHAT_SYS;
-	sprintf(msg.msg,"注意 : 用户 %s 即将下线！\n", user->name);
+	sprintf(msg.msg,"注意 : 用户 %s 即将下线！", user->name);
 	strcpy(msg.name,user->name);
 	send_all(&msg);
 	if(user->team)
@@ -98,6 +118,15 @@ void do_work(struct User* user) {
 
         close(user->fd);
 
+    } else if(msg.type & CHAT_FUNC) {
+        switch(msg.msg[1]) {
+                case '1' :statnames(user);
+                          break;
+                default:
+                        sprintf(r_msg.msg,"此服务尚未提供 !");
+                        r_msg.type =CHAT_SYS;
+                        send(user->fd,(void*)&r_msg,sizeof(r_msg),0);
+        }
     }
 
 

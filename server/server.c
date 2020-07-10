@@ -20,6 +20,13 @@ int port = 0;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 
+void logout(int sigunm){
+    struct ChatMsg msg;
+    msg.type = CHAT_SYS;
+    send_all(&msg);
+    exit(0);
+
+}
 int main(int argc, char** argv) {
 
     int opt, listener, epollfd;
@@ -149,7 +156,7 @@ int main(int argc, char** argv) {
 
     socklen_t len = sizeof(client);
 
-
+   signal(SIGINT,logout);
 
     while (1) {
 
