@@ -129,6 +129,8 @@ int udp_accept(int fd, struct User* user) {
 
 
         sprintf(r_msg.msg,"User"RED" %s"NONE"上线了!",user->name);
+        printf("User"RED" %s"NONE"上线了!",user->name);
+        strcpy(r_msg.name,user->name);)
         r_msg.type = CHAT_SYS;
         send_all(&r_msg);
  
