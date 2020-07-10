@@ -39,6 +39,7 @@ void send_all(struct ChatMsg *msg){
 void statnames(struct User* user) {
       struct ChatMsg msg;
       bzero(&msg,sizeof(msg));
+      msg.type = CHAT_SYS;
       for(int i =0;i<MAX;i++){
         if(bteam[i].online) {
           strcat(msg.msg,bteam[i].name);
@@ -86,6 +87,7 @@ void do_work(struct User* user) {
            send(user->fd,(void*)&r_msg,sizeof(r_msg),0);
         } else {
            msg.type = CHAT_MSG;
+           printf("MSG\n");
            strcpy(msg.name,user->name);
            strncpy(to,msg.msg+1,i-1);//????????
            send_to(to,&msg,user->fd);

@@ -101,7 +101,7 @@ int udp_accept(int fd, struct User* user) {
 
     response.type = 0;
 
-    strcpy(response.msg, "Login Success. Enjoy yourself!");
+    sprintf(response.msg, "Login Success. Enjoy yourself!\nUsername = %s",request.name);
 
     sendto(fd, (void*)&response, sizeof(response), 0, (struct sockaddr*)&client, len);
 
@@ -129,8 +129,8 @@ int udp_accept(int fd, struct User* user) {
 
     bzero(&r_msg,sizeof(r_msg));
 
-        sprintf(r_msg.msg,"User %s 上线了!",user->name);
-        printf("User"RED" %s"NONE"上线了!",user->name);
+        sprintf(r_msg.msg,"User %s 加入聊天!\n  %s",user->name,request.msg);
+        printf("User"RED" %s"NONE"加入聊天! ",user->name);
         strcpy(r_msg.name,user->name);
         r_msg.type = CHAT_SYS;
         send_all(&r_msg);    

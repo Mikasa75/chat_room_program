@@ -160,7 +160,11 @@ int main(int argc, char** argv) {
     msg.type = CHAT_WALL;
     printf(RED"Please Input: \n"NONE);
     gets(msg.msg);
-   send(sockfd, (void*)&msg, sizeof(msg), 0);
+    if (strlen(msg.msg)) {
+            if (msg.msg[0] == '@') msg.type = CHAT_MSG;
+            if (msg.msg[0] == '#') msg.type = CHAT_FUNC;
+            send(sockfd, (void*)&msg, sizeof(msg), 0);
+        }
     while (1) {
         bzero(&msg, sizeof(msg));
         msg.type = CHAT_WALL;
