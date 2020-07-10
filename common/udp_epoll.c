@@ -1,12 +1,13 @@
 
 #include "head.h"
-
+extern pthread_mutex_t rmutex;
+extern pthread_mutex_t bmutex;
 extern int port;
 extern int repollfd, bepollfd;
 struct User* rteam, * bteam;
 void add_event_ptr(int epollfd, int fd, int events, struct User* user) {
     struct epoll_event ev;
-    ev.data.ptr = user;
+    ev.data.ptr = (void*)user;
     ev.events = events;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
 }
@@ -106,25 +107,25 @@ int udp_accept(int fd, struct User* user) {
 
     if (request.team) {
 
-        DBG(GREEN"Info"NONE" : "BLUE"%s login on %s:%d  <%s>\n", request.name, inet_ntoa(client.sin_addr), ntohs(client.sin_port), request.msg);
+        DBG(GREEN"注意"NONE" : "BLUE"%s 登录成功 %s:%d  <%s>\n", request.name, inet_ntoa(client.sin_addr), ntohs(client.sin_port), request.msg);
 
     }
     else {
 
-        DBG(GREEN"Info"NONE" : "RED"%s login on %s:%d   <%s>\n", request.name, inet_ntoa(client.sin_addr), ntohs(client.sin_port), request.msg);
+        DBG(GREEN"注意"NONE" : "RED"%s 登录成功 %s:%d   <%s>\n", request.name, inet_ntoa(client.sin_addr), ntohs(client.sin_port), request.msg);
 
     }
 
-
+ //   strcpy(user->ip,inet_ntoa(client.sin.addr));
 
     strcpy(user->name, request.name);
 
     user->team = request.team;
-
+    
     new_fd = udp_connect(&client);
 
     user->fd = new_fd;
-
+    
     return new_fd;
 
 }
@@ -138,6 +139,12 @@ int find_sub(struct User* team) {
 
 void add_to_sub_reactor(struct User* user) {
     struct User* team = (user->team ? bteam : rteam);
+    if(user->team) {
+      pthread_mutex_lock(&bmutex);
+    } else {
+     pthread_mutex_lock(&rmutex);
+    }
+    //????????
     int sub = find_sub(team);
     if (sub < 0) {
         fprintf(stderr, "Full Team!\n");
@@ -146,7 +153,13 @@ void add_to_sub_reactor(struct User* user) {
     team[sub] =  *user;
     team[sub].online = 1;
     team[sub].flag = 10;
-    DBG(L_RED"sub = %d, name =% s\n", sub, team[sub].name);
+     if(user->team) {
+      pthread_mutex_unlock(&bmutex);
+    } else {
+     pthread_mutex_unlock(&rmutex);
+    }
+
+    printf(""RED"sub = %d, name =%s\n", sub, team[sub].name);
     if (user->team)
         add_event_ptr(bepollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
     else

@@ -1,37 +1,104 @@
 ﻿
 #include "head.h"
-
+extern pthread_mutex_t rmutex;
+extern pthread_mutex_t bmutex;
 extern int repollfd, bepollfd;
+extern struct User*rteam,*bteam;
+void send_to(char *to,struct ChatMsg *msg, int fd){
 
+     int flag = 0;
+     for(int i=0;i<MAX;i++) {
+        if(rteam[i].online &&(!strcmp(to,rteam[i].name))){
+             send(rteam[i].fd,msg,sizeof(struct ChatMsg),0);
+	     flag =1;
+             break;
+
+        }  
+	 if(bteam[i].online &&(!strcmp(to,bteam[i].name))){
+             send(bteam[i].fd,msg,sizeof(struct ChatMsg),0);
+             flag =1;
+	     break;
+        }
+     }
+	if(!flag){
+	    memset(msg->msg,0,sizeof(struct ChatMsg));
+	    sprintf(msg->msg,"用户"RED" %s "NONE"现不在线，或用户名错误！",to);
+	    msg->type =CHAT_SYS;
+	    send(fd, msg,sizeof(struct ChatMsg),0);
+	}
+
+}
+
+void send_all(struct ChatMsg *msg){
+        for(int i =0;i<MAX;i++){
+        if(bteam[i].online) send(bteam[i].fd,(void*)msg,sizeof(struct ChatMsg),0);
+        if(rteam[i].online) send(rteam[i].fd,(void*)msg,sizeof(struct ChatMsg),0);
+        }
+}
 
 
 void do_work(struct User* user) {
 
     struct ChatMsg msg;
 
+    struct ChatMsg r_msg;
+
+    bzero(&msg,sizeof(msg));
+    bzero(&r_msg,sizeof(r_msg));
     recv(user->fd, (void*)&msg, sizeof(msg), 0);
 
     if (msg.type & CHAT_WALL) {
+     //   if(!user->test[4]){
 
         printf("<%s> ∼ %s \n", user->name, msg.msg);
-
+        sprintf(r_msg.msg,"User"RED" %s"NONE"上线了!",user->name);
+        r_msg.type = CHAT_SYS;
+        send_all(&msg);
+        //?????????????????//
     }
 
     else if (msg.type & CHAT_MSG) {
-
+        char to[20] = {0};
+        int i = 1;
+        for( ;i<=21;i++) {
+           if(msg.msg[i] ==' ') break;
+        }
+        if(msg.msg[i] != ' '|| msg.msg[0] != '@'){
+           memset(&r_msg , 0,sizeof(r_msg));
+           r_msg.type =CHAT_SYS;
+           sprintf(r_msg.msg,RED"私聊的格式错误，服务端无法处理信息"NONE);
+           send(user->fd,(void*)&r_msg,sizeof(r_msg),0);
+        } else {
+           msg.type = CHAT_MSG;
+           strcpy(msg.name,user->name);
+           strncpy(to,msg.msg+1,i-1);//????????
+           send_to(to,&msg,user->fd);
+        }
         printf("<%s> $ %s \n", user->name, msg.msg);
 
     }
 
-    else if (msg, type & CHAT_FIN) {
+    else if (msg. type & CHAT_FIN) {
 
+	bzero(msg.msg,sizeof(msg.msg));
+	msg.type = CHAT_SYS;
+	sprintf(msg.msg,"用户"RED" %s "NONE"即将下线！\n", user->name);
+	strcpy(msg.name,user->name);
+	send_all(&msg);
+	if(user->team)
+		pthread_mutex_lock(&bmutex);
+	else 
+		pthread_mutex_lock(&rmutex);
         user->online = 0;
-
+//	user->score = 0;
         int epollfd = user->team ? bepollfd : repollfd;
-
         del_event(epollfd, user->fd);
+	if(user->team)
+                pthread_mutex_unlock(&bmutex);
+        else 
+                pthread_mutex_unlock(&rmutex);
 
-        printf(GREEN"Server Info"NONE" :%s logout!\n", user->name);
+        printf(GREEN"系统"NONE" :%s 下线!\n", user->name);
 
         close(user->fd);
 

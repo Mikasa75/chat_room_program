@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
         case 't':
 
-            team = atoi(optarg);
+            request.team = atoi(optarg);
 
             break;
 
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
 
     if (!server_port) server_port = atoi(get_conf_value(conf, "SERVERPORT"));
 
-    if (!team) team = atoi(get_conf_value(conf, "TEAM"));
+    if (!request.team) request.team = atoi(get_conf_value(conf, "TEAM"));
 
     if (!strlen(server_ip)) strcpy(server_ip, get_conf_value(conf, "SERVERIP"));
 
@@ -144,14 +144,16 @@ int main(int argc, char** argv) {
         }
     }
     else {
-        DBG(RED"Error"NONE"The Game Server is out of service!\n);
+        DBG(RED"Error"NONE"The Game Server is out of service!\n");
             exit(1);
     }
     DBG(GREEN"Server"NONE" : %s\n", response.msg);
     
     connect(sockfd, (struct sockaddr*)&server, len);
+   
     pthread_t recv_t;
-    pthread_creat(&recv_t, NULL, do_recv, NULL);
+    pthread_create(&recv_t, NULL, do_recv, NULL);
+   
     signal(SIGINT, logout);
     struct ChatMsg msg;
     while (1) {

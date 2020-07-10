@@ -17,7 +17,8 @@ struct User* rteam, * bteam;
 
 int port = 0;
 
-
+pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char** argv) {
 
@@ -174,6 +175,7 @@ int main(int argc, char** argv) {
 
             struct User user;
 
+            bzero(&user,sizeof(user));
             char buff[512] = { 0 };
 
             if (events[i].data.fd == listener) {
