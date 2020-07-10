@@ -160,8 +160,7 @@ int main(int argc, char** argv) {
         bzero(&msg, sizeof(msg));
         msg.type = CHAT_WALL;
         printf(RED"Please Input: \n"NONE);
-        scanf("%s[^\n]", msg.msg);
-        getchar();
+        gets(msg.msg);
         if (strlen(msg.msg)) {
             if (msg.msg[0] == '@') msg.type = CHAT_MSG;
             if (msg.msg[0] == '#') msg.type = CHAT_FUNC;

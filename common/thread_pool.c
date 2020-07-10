@@ -78,7 +78,7 @@ void do_work(struct User* user) {
 
 	bzero(msg.msg,sizeof(msg.msg));
 	msg.type = CHAT_SYS;
-	sprintf(msg.msg,"用户"RED" %s "NONE"即将下线！\n", user->name);
+	sprintf(msg.msg,"用户 %s 即将下线！\n", user->name);
 	strcpy(msg.name,user->name);
 	send_all(&msg);
 	if(user->team)
