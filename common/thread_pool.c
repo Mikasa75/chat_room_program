@@ -48,12 +48,9 @@ void do_work(struct User* user) {
     recv(user->fd, (void*)&msg, sizeof(msg), 0);
 
     if (msg.type & CHAT_WALL) {
-     //   if(!user->test[4]){
-
         printf("<%s> ∼ %s \n", user->name, msg.msg);
        strcpy(msg.name,user->name);
-        send_all(&r_msg);
-        //?????????????????//
+        send_all(&msg);
     }
 
     else if (msg.type & CHAT_MSG) {

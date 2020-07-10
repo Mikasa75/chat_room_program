@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
 
     while (1) {
 
-        DBG(YELLOW"Main Reactor"NONE" : Waiting for clienti.\n");
+        DBG(YELLOW"Main Reactor"NONE" : Waiting for client.\n");
 
         int nfds = epoll_wait(epollfd, events, MAX * 2, -1);
 
