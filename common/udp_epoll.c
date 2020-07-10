@@ -136,8 +136,8 @@ int udp_accept(int fd, struct User* user) {
         r_msg.type = CHAT_SYS;
         send_all(&r_msg);    */
  
- /*   user->fd = new_fd;
-    response.type = 0;
+    user->fd = new_fd;
+ /*   response.type = 0;
     sprintf(response.msg,"Dear %s Login Success. Enjoy yourself\n",request.name);
 */
     return new_fd;
