@@ -22,7 +22,7 @@ void send_to(char *to,struct ChatMsg *msg, int fd){
      }
 	if(!flag){
 	    memset(msg->msg,0,sizeof(struct ChatMsg));
-	    sprintf(msg->msg,"用户"RED" %s "NONE"现不在线，或用户名错误！",to);
+	    sprintf(msg->msg,"用户 %s 现不在线，或用户名错误！",to);
 	    msg->type =CHAT_SYS;
 	    send(fd, msg,sizeof(struct ChatMsg),0);
 	}
@@ -62,7 +62,7 @@ void do_work(struct User* user) {
         if(msg.msg[i] != ' '|| msg.msg[0] != '@'){
            memset(&r_msg , 0,sizeof(r_msg));
            r_msg.type =CHAT_SYS;
-           sprintf(r_msg.msg,RED"私聊的格式错误，服务端无法处理信息"NONE);
+           sprintf(r_msg.msg,"私聊的格式错误，服务端无法处理信息");
            send(user->fd,(void*)&r_msg,sizeof(r_msg),0);
         } else {
            msg.type = CHAT_MSG;
@@ -78,7 +78,7 @@ void do_work(struct User* user) {
 
 	bzero(msg.msg,sizeof(msg.msg));
 	msg.type = CHAT_SYS;
-	sprintf(msg.msg,"用户 %s 即将下线！\n", user->name);
+	sprintf(msg.msg,"注意 : 用户 %s 即将下线！\n", user->name);
 	strcpy(msg.name,user->name);
 	send_all(&msg);
 	if(user->team)
@@ -94,7 +94,7 @@ void do_work(struct User* user) {
         else 
                 pthread_mutex_unlock(&rmutex);
 
-        printf(GREEN"系统"NONE" :%s 下线!\n", user->name);
+        printf(GREEN"系统通知"NONE" :%s 下线!\n", user->name);
 
         close(user->fd);
 

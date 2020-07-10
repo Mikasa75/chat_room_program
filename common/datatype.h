@@ -185,10 +185,11 @@ struct FootBallMsg {
 #define CHAT_MSG 0x10
 #define CHAT_FUNC 0x20
 #define CHAT_SYS 0x40
+
 struct ChatMsg {
     int type;
-    char msg[1024];
     char name[20];
+    char msg[1024];
 };
 
 

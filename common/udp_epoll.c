@@ -5,12 +5,14 @@ extern pthread_mutex_t bmutex;
 extern int port;
 extern int repollfd, bepollfd;
 struct User* rteam, * bteam;
+
 void add_event_ptr(int epollfd, int fd, int events, struct User* user) {
     struct epoll_event ev;
     ev.data.ptr = (void*)user;
     ev.events = events;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
 }
+
 void del_event(int epollfd, int fd) {
     epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
 }
@@ -134,8 +136,10 @@ int udp_accept(int fd, struct User* user) {
         r_msg.type = CHAT_SYS;
         send_all(&r_msg);    */
  
-    user->fd = new_fd;
-    
+ /*   user->fd = new_fd;
+    response.type = 0;
+    sprintf(response.msg,"Dear %s Login Success. Enjoy yourself\n",request.name);
+*/
     return new_fd;
 
 }
@@ -169,7 +173,7 @@ void add_to_sub_reactor(struct User* user) {
      pthread_mutex_unlock(&rmutex);
     }
 
-    printf(""RED"sub = %d, name =%s\n", sub, team[sub].name);
+    DBG(""RED"sub = %d, name =%s\n", sub, team[sub].name);
     if (user->team)
         add_event_ptr(bepollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
     else

@@ -10,7 +10,7 @@ void *do_recv(void*arg){
           if(msg.type & CHAT_WALL ){
             printf(BLUE"%s"NONE" : %s\n",msg.name,msg.msg);
           } else if(msg.type &CHAT_MSG) {
-            printf(RED"%s"NONE" : %s\n",msg.name,msg.msg);
+            printf(RED"%s"NONE" ~ %s\n",msg.name,msg.msg);
           } else if(msg.type &CHAT_SYS) {
             printf(YELLOW"系统提示 "NONE": %s\n",msg.msg);
           } else if(msg.type &CHAT_FIN) {
