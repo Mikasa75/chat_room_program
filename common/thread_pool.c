@@ -51,8 +51,7 @@ void do_work(struct User* user) {
      //   if(!user->test[4]){
 
         printf("<%s> ∼ %s \n", user->name, msg.msg);
-        sprintf(r_msg.msg,"User"RED" %s"NONE"上线了!",user->name);
-        r_msg.type = CHAT_SYS;
+       strcpy(msg.name,user->name);
         send_all(&r_msg);
         //?????????????????//
     }

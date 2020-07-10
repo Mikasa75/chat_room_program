@@ -123,7 +123,15 @@ int udp_accept(int fd, struct User* user) {
     user->team = request.team;
     
     new_fd = udp_connect(&client);
+    struct ChatMsg r_msg;
 
+    bzero(&r_msg,sizeof(r_msg));
+
+
+        sprintf(r_msg.msg,"User"RED" %s"NONE"上线了!",user->name);
+        r_msg.type = CHAT_SYS;
+        send_all(&r_msg);
+ 
     user->fd = new_fd;
     
     return new_fd;
