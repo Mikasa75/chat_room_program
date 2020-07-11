@@ -98,7 +98,7 @@ int udp_accept(int fd, struct User* user) {
      }
 
 strcpy(user->name, request.name);
-
+/*
     user->team = request.team;
   struct ChatMsg r_msg;
 
@@ -110,7 +110,7 @@ strcpy(user->name, request.name);
         r_msg.type = CHAT_SYS;
         send_all(&r_msg);
 
-
+*/
     response.type = 0;
 
     sprintf(response.msg, "Login Success. Enjoy yourself!\nUsername = %s",request.name);

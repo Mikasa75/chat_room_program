@@ -186,8 +186,12 @@ int main(int argc, char** argv) {
                 int new_fd = udp_accept(listener, &user);
 
                 if (new_fd > 0) {
-
-                       add_to_sub_reactor(&user);
+	       struct ChatMsg login_msg;
+                bzero(&login_msg, sizeof(login_msg));
+                login_msg.type = CHAT_SYS;
+                sprintf(login_msg.msg, "¿¿¿¿ %s ¿¿¿¿¿¿¿¿¿¿¿\n", user.name);
+                send_all(&login_msg);
+                add_to_sub_reactor(&user);
 
                 }
 
