@@ -46,6 +46,8 @@ void w_gotoxy_puts(WINDOW *win, int x, int y, char *s) {
     wrefresh(win);
 }
 
+void show_info();
+
 void init_ui() {
     initscr();
     clear();
@@ -75,32 +77,54 @@ void init_ui() {
     input_win = create_newwin(INFO_WIDTH + MSG_WIDTH, INPUT_HEIGHT, 2, MSG_HEIGHT + 1);
     input_sub = subwin(input_win, MSG_HEIGHT + 1, MSG_WIDTH + INFO_WIDTH - 2, MSG_HEIGHT + 1, 4);
 
+    wattron(message_win, COLOR_PAIR(1));
+    box(message_win, 0, 0);
+    wattron(input_win, COLOR_PAIR(1));
+    box(input_win, 0, 0);
+    wattron(info_win, COLOR_PAIR(1));
+    box(info_win, 0, 0);
+
+    show_info();
     wrefresh(message_win);
     wrefresh(info_win);
     wrefresh(input_win);
 }
 
+void show_info() {
+    wattron(info_sub, COLOR_PAIR(2));
+    w_gotoxy_puts(info_sub, MSG_WIDTH + 1, 2, "Help:");
+    wattron(info_sub, COLOR_PAIR(7));
+    w_gotoxy_puts(info_sub, 3, 3, "start with @user 私聊");
+    wrefresh(info_sub);
+}
 
 void show_message(WINDOW *win, struct ChatMsg *msg, int type) {
     time_t time_now = time(NULL);
     struct tm* tm = localtime(&time_now);
     char timestr[20] = {0};
     sprintf(timestr, "%02d:%02d:%02d ", tm->tm_hour, tm->tm_min, tm->tm_sec);
-    if (type) {
-        strcpy(msg->name, "Server Info");
+    if (type || msg->type & CHAT_SYS) {
+        strcpy(msg->name, "Sys Info");
     }
 
-    if (msgnum <= MSG_HEIGHT - 3) {
-        msgnum = MSG_HEIGHT-3;
+    if (msgnum > MSG_HEIGHT - 3) {
+        msgnum = MSG_HEIGHT - 3;
         scroll(win);
     }
-        wattron(win, COLOR_PAIR(5));
-        w_gotoxy_puts(win, 1, msgnum, timestr);
-        w_gotoxy_puts(win, 10, msgnum, msg->name);
-        wattron(win, COLOR_PAIR(3));
-        w_gotoxy_puts(win, 10 + strlen(msg->name), msgnum, msg->msg);
-     int tmp = (strlen(msg->msg)/MSG_WIDTH)+1;
-     msgnum +=tmp;
+    wattron(win, COLOR_PAIR(5));
+    w_gotoxy_puts(win, 1, msgnum, timestr);
+    if (type == 1 || (msg->type & CHAT_SYS))
+        wattron(win, COLOR_PAIR(4));
+    else if (msg->type & CHAT_MSG)
+        wattron(win, COLOR_PAIR(7));
+    else
+        wattron(win, COLOR_PAIR(6));
+    w_gotoxy_puts(win, 10, msgnum, msg->name);
+    wattron(win, COLOR_PAIR(3));
+    w_gotoxy_puts(win, 10 + strlen(msg->name), msgnum, msg->msg);
+    int tmp = ((strlen(msg->msg) + 17) / MSG_WIDTH) + 1;
+    msgnum += tmp;
     wrefresh(win);
-    wrefresh(message_win);
+    wmove(input_win, 2, 1);
+    wrefresh(input_win);
 }
