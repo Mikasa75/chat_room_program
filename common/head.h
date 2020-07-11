@@ -53,7 +53,7 @@
 #include <sys/shm.h>
 
 #include <unistd.h>
-
+#include <locale.h>
 #include <string.h>
 
 #include <sys/epoll.h>
@@ -76,4 +76,7 @@
 
 #include "udp_epoll.h"
 void *do_recv(void*arg);
+#include <ncurses.h>
+#include "char_ui.h"
+#include "send_char.h"
 #endif

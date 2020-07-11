@@ -155,8 +155,8 @@ int main(int argc, char** argv) {
     pthread_create(&recv_t, NULL, do_recv, NULL);
    
     signal(SIGINT, logout);
-/*    struct ChatMsg msg;
-    bzero(&msg, sizeof(msg));
+    struct ChatMsg msg;
+/*    bzero(&msg, sizeof(msg));
     msg.type = CHAT_WALL;
     printf(RED"Please Input: \n"NONE);
     gets(msg.msg);
