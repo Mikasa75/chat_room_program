@@ -91,22 +91,16 @@ void show_message(WINDOW *win, struct ChatMsg *msg, int type) {
     }
 
     if (msgnum <= MSG_HEIGHT - 3) {
-        wattron(win, COLOR_PAIR(5));
-        w_gotoxy_puts(win, 1, msgnum, timestr);
-        w_gotoxy_puts(win, 10, msgnum, msg->name);
-        wattron(win, COLOR_PAIR(3));
-        w_gotoxy_puts(win, 10 + strlen(msg->name), msgnum, msg->msg);
-        msgnum++;
-    } else {
-        msgnum = MSG_HEIGHT - 3;
+        msgnum = MSG_HEIGHT-3;
         scroll(win);
+    }
         wattron(win, COLOR_PAIR(5));
         w_gotoxy_puts(win, 1, msgnum, timestr);
         w_gotoxy_puts(win, 10, msgnum, msg->name);
         wattron(win, COLOR_PAIR(3));
         w_gotoxy_puts(win, 10 + strlen(msg->name), msgnum, msg->msg);
-        msgnum++;
-    }
+     int tmp = (strlen(msg->msg)/MSG_WIDTH)+1;
+     msgnum +=tmp;
     wrefresh(win);
     wrefresh(message_win);
 }

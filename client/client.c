@@ -1,7 +1,4 @@
-﻿//不上传
-#include "head.h"
-
-
+﻿#include "head.h"
 
 int server_port = 0;
 
@@ -149,7 +146,7 @@ int main(int argc, char** argv) {
     }
     DBG(GREEN"Server"NONE" : %s\n", response.msg);
     
-    connect(sockfd, (struct sockaddr*)&server, len);
+    connect(sockfd, (struct sockaddr*)&server, sizeof(struct sockaddr));
    
     pthread_t recv_t;
     pthread_create(&recv_t, NULL, do_recv, NULL);
@@ -166,10 +163,16 @@ int main(int argc, char** argv) {
             send(sockfd, (void*)&msg, sizeof(msg), 0);
         }   */
     while (1) {
-        bzero(&msg, sizeof(msg));
+    /*    bzero(&msg, sizeof(msg));
         msg.type = CHAT_WALL;
         printf(RED"Please Input: \n"NONE);
-        gets(msg.msg);
+        gets(msg.msg)*/;
+        bzero(&msg, sizeof(msg));
+        msg.type = CHAT_WALL;
+        strcpy(msg.name, request.name);
+        //printf(RED "Please Input:\n" NONE);
+        scanf("%[^\n]s", msg.msg);
+        getchar();
         if (strlen(msg.msg)) {
             if (msg.msg[0] == '@') msg.type = CHAT_MSG;
             if (msg.msg[0] == '#') msg.type = CHAT_FUNC;

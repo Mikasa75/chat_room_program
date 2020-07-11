@@ -188,8 +188,8 @@ struct FootBallMsg {
 
 struct ChatMsg {
     int type;
-    char msg[1024];
     char name[20];
+    char msg[1024];
 };
 
 
